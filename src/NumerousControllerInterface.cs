@@ -12,6 +12,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml.Linq;
 using static Kusaanko.Bvets.NumerousControllerInterface.Controller.NCIController;
+using Rug.Osc;
 
 namespace Kusaanko.Bvets.NumerousControllerInterface
 {
@@ -59,6 +60,8 @@ namespace Kusaanko.Bvets.NumerousControllerInterface
         private bool _isUpdateController;
         private bool _isDisposeRequested;
         private static bool s_isRunningGetAllControllers;
+
+        private OscSender oscSender;
 
         public NumerousControllerInterface()
         {
@@ -412,6 +415,9 @@ namespace Kusaanko.Bvets.NumerousControllerInterface
                     CheckUpdates();
                 })).Start();
             }
+
+            oscSender = new OscSender(IPAddress.Parse("127.0.0.1"), 0, 9501);
+            oscSender.Connect();
         }
 
         public static bool IsDebug()
@@ -636,6 +642,8 @@ namespace Kusaanko.Bvets.NumerousControllerInterface
                 plugin.Dispose();
             }
             TimerController.Stop();
+                    oscSender.Send(new OscMessage("/end", true));
+            oscSender.Dispose();
             _isDisposeRequested = true;
         }
 
@@ -656,6 +664,26 @@ namespace Kusaanko.Bvets.NumerousControllerInterface
                     }
                 }
                 LeverMoved(this, new InputEventArgs(axis, notch));
+            }
+            if (axis == 1)
+            {
+                oscSender.Send(new OscMessage("/accel", notch));
+            }
+            else if (axis == 2)
+            {
+                oscSender.Send(new OscMessage("/brake", notch));
+            }
+            else
+            {
+                if (notch < 0)
+                {
+                    oscSender.Send(new OscMessage("/brake", -notch));
+                }
+                else
+                {
+                    oscSender.Send(new OscMessage("/brake", 0));
+                    oscSender.Send(new OscMessage("/accel", notch));
+                }
             }
         }
 

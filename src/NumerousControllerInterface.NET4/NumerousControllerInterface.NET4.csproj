@@ -48,6 +48,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LibUsbDotNet">
@@ -55,6 +56,12 @@
     </Reference>
     <Reference Include="Mackoy.IInputDevice">
       <HintPath>..\Mackoy.IInputDevice.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>.\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Rug.Osc, Version=1.2.5.17694, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Rug.Osc.1.2.5\lib\Rug.Osc.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX">
       <HintPath>.\SlimDX.dll</HintPath>
